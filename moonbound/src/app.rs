@@ -1,9 +1,30 @@
-use leptos::prelude::*;
-use leptos_meta::{provide_meta_context, Stylesheet, Title};
-use leptos_router::{
-    components::{Route, Router, Routes},
-    StaticSegment, WildcardSegment,
-};
+use leptos::*;
+use leptos_meta::*;
+use leptos_router::*;
+use crate::component::edit_post::EditPost;
+use crate::component::blog_previews::BlogPreviews;
+use crate::component::toast::Toast;
+use crate::component::view_post::ViewPost;
+
+#[component]
+pub fn Navbar() -> impl IntoView {
+    view! {
+        <div class="dark:bg-gray-800 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                // title on the left
+                <a href="/" class="text-2xl font-bold">Moonbound</a>
+
+                // nav bar
+                <nav>
+                    <ul class="flex space-x-4">
+                        <li><a href="/" class="hover:text-blue-400">Blog</a></li>
+                        <li><a href="/edit" class="hover:text-blue-400">Create</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+}
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -13,33 +34,24 @@ pub fn App() -> impl IntoView {
     view! {
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet
-        <Stylesheet id="leptos" href="/pkg/moonbound.css"/>
+        <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
 
         // sets the document title
-        <Title text="Welcome to Leptos"/>
+        <Title text="Moonbound"/>
+        <Toast/>
 
+        <Navbar/>
         // content for this welcome page
+
         <Router>
-            <main>
-                <Routes fallback=move || "Not found.">
-                    <Route path=StaticSegment("") view=HomePage/>
-                    <Route path=WildcardSegment("any") view=NotFound/>
+            <main class="dark:bg-gray-700 dark:text-gray-200 p-8 h-full">
+                <Routes>
+                    <Route path="" view=BlogPreviews/>
+                    <Route path="/edit/:post_id?" view=EditPost/>
+                    <Route path="/view/:post_id?" view=ViewPost/>
                 </Routes>
             </main>
         </Router>
-    }
-}
-
-/// Renders the home page of your application.
-#[component]
-fn HomePage() -> impl IntoView {
-    // Creates a reactive value to update the button
-    let count = RwSignal::new(0);
-    let on_click = move |_| *count.write() += 1;
-
-    view! {
-        <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
     }
 }
 
